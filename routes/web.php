@@ -9,6 +9,7 @@ use App\Http\Controllers\EmployeeDocumentController;
 use App\Http\Controllers\EmployeeNoteController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,4 +44,13 @@ Route::middleware(['auth', 'role.hr'])->group(function () {
     Route::get('/salaries', [SalaryController::class, 'index'])->name('salaries.index');
 
     Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit.index');
+
+    Route::middleware('role.it')->group(function () {
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+        Route::post('/users/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('users.toggle-status');
+    });
 });

@@ -35,6 +35,14 @@ class UserSeeder extends Seeder
                 'is_active' => false,
                 'email_verified_at' => now(),
             ],
+            [
+                'name' => 'IT Administrator',
+                'email' => 'itadmin@atlastech.com',
+                'password' => Hash::make('password123'),
+                'role' => 'it_admin',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ],
         ];
 
         foreach ($users as $user) {

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'hr'])->default('hr');
+            $table->enum('role', ['admin', 'hr', 'it_admin'])->default('hr');
             $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();

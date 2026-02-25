@@ -39,9 +39,19 @@ class User extends Authenticatable
         return $this->role === 'hr';
     }
 
+    public function isItAdmin(): bool
+    {
+        return $this->role === 'it_admin';
+    }
+
     public function hasHrAccess(): bool
     {
-        return $this->is_active && in_array($this->role, ['admin', 'hr']);
+        return $this->is_active && in_array($this->role, ['admin', 'hr', 'it_admin']);
+    }
+
+    public function canManageUsers(): bool
+    {
+        return $this->is_active && $this->isItAdmin();
     }
 
     public function auditLogs()
