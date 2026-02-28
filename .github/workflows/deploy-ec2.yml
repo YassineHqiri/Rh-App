@@ -1,4 +1,4 @@
-name: Deploy to AWS EC2
+name: Deploy Docker to AWS EC2
 
 on:
   push:
@@ -24,5 +24,5 @@ jobs:
             git fetch --all
             git checkout main
             git pull origin main
-            chmod +x deployment/deploy.sh
-            ./deployment/deploy.sh
+            chmod +x deployment/deploy-docker.sh
+            ./deployment/deploy-docker.sh

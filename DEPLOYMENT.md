@@ -3,6 +3,7 @@
 This project is prepared for:
 - CI on GitHub Actions: `.github/workflows/ci.yml`
 - CD to AWS EC2 over SSH: `.github/workflows/deploy-ec2.yml`
+- Docker runtime on EC2: `Dockerfile` + `docker-compose.prod.yml`
 
 ## 1) Initialize git locally
 
@@ -27,9 +28,8 @@ git push -u origin main
 On EC2:
 
 1. Install required packages:
-   - PHP 8.x + extensions
-   - Composer
-   - Node.js + npm (if building assets on server)
+   - Docker Engine
+   - Docker Compose plugin (`docker compose`)
    - Git
 2. Clone repo to your app path (example `/var/www/schoolpro`):
 
@@ -37,7 +37,6 @@ On EC2:
 git clone <YOUR_GITHUB_REPO_URL> /var/www/schoolpro
 cd /var/www/schoolpro
 cp .env.example .env
-php artisan key:generate
 ```
 
 3. Configure `.env` for production database/app settings.
@@ -56,13 +55,12 @@ In GitHub repo -> Settings -> Secrets and variables -> Actions:
 
 - Push to `main`
 - CI job runs tests
-- Deploy job SSHes into EC2 and executes `deployment/deploy.sh`
+- Deploy job SSHes into EC2 and executes `deployment/deploy-docker.sh`
 
 ## Notes
 
-- `deployment/deploy.sh` runs:
-  - composer install (`--no-dev`)
-  - npm build (if npm exists)
-  - `php artisan migrate --force`
-  - Laravel cache refresh
+- `deployment/deploy-docker.sh` runs:
+  - `docker compose up -d --build --remove-orphans`
+  - `php artisan migrate --force` inside app container
+  - Laravel cache refresh inside app container
 - If you use queues/workers, configure Supervisor/systemd separately.

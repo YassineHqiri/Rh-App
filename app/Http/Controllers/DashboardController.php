@@ -27,7 +27,12 @@ class DashboardController extends Controller
             ->orderBy('name')
             ->get();
 
-        $hiringTrend = Employee::selectRaw("DATE_FORMAT(hire_date, '%Y-%m') as month, COUNT(*) as count")
+        $driver = DB::connection()->getDriverName();
+        $monthExpr = $driver === 'sqlite'
+            ? "strftime('%Y-%m', hire_date)"
+            : "DATE_FORMAT(hire_date, '%Y-%m')";
+
+        $hiringTrend = Employee::selectRaw("{$monthExpr} as month, COUNT(*) as count")
             ->where('hire_date', '>=', now()->subMonths(12))
             ->groupBy('month')
             ->orderBy('month')
