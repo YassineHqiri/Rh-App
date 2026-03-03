@@ -8,6 +8,88 @@
     <p class="mt-1 text-sm text-gray-500">Welcome back, {{ Auth::user()->name }}. Here's an overview of your HR operations.</p>
 </div>
 
+{{-- Filter Section --}}
+<div class="mb-8 bg-white rounded-xl shadow ring-1 ring-gray-200 p-6">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Filter Statistics</h2>
+        @if($departmentFilter || $statusFilter || $hireDateFilter || $hireDateTo)
+        <a href="{{ route('dashboard') }}" class="text-sm font-medium text-red-600 hover:text-red-500">Reset Filters</a>
+        @endif
+    </div>
+    
+    <form method="GET" action="{{ route('dashboard') }}" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <!-- Department -->
+        <div>
+            <label for="department" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+            <select id="department" name="department" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-indigo-500">
+                <option value="">All Departments</option>
+                @foreach($departments as $dept)
+                <option value="{{ $dept->id }}" {{ $departmentFilter == $dept->id ? 'selected' : '' }}>
+                    {{ e($dept->name) }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Status -->
+        <div>
+            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select id="status" name="status" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-indigo-500">
+                <option value="">All Status</option>
+                <option value="active" {{ $statusFilter === 'active' ? 'selected' : '' }}>Active</option>
+                <option value="inactive" {{ $statusFilter === 'inactive' ? 'selected' : '' }}>Inactive</option>
+            </select>
+        </div>
+
+        <!-- Hire Date From -->
+        <div>
+            <label for="hire_date_from" class="block text-sm font-medium text-gray-700 mb-1">From</label>
+            <input type="date" id="hire_date_from" name="hire_date_from" value="{{ $hireDateFilter }}" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+
+        <!-- Hire Date To -->
+        <div>
+            <label for="hire_date_to" class="block text-sm font-medium text-gray-700 mb-1">To</label>
+            <input type="date" id="hire_date_to" name="hire_date_to" value="{{ $hireDateTo }}" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+
+        <!-- Button -->
+        <div class="flex items-end">
+            <button type="submit" class="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition">
+                Apply
+            </button>
+        </div>
+    </form>
+
+    {{-- Active Filters --}}
+    @if($departmentFilter || $statusFilter || $hireDateFilter || $hireDateTo)
+    <div class="mt-4 pt-4 border-t border-gray-200">
+        <div class="flex flex-wrap gap-2">
+            @if($departmentFilter)
+            <span class="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-800">
+                Dept: {{ $departments->firstWhere('id', $departmentFilter)?->name ?? 'N/A' }}
+            </span>
+            @endif
+            @if($statusFilter)
+            <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
+                Status: {{ $statusFilter === 'active' ? 'Active' : 'Inactive' }}
+            </span>
+            @endif
+            @if($hireDateFilter)
+            <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
+                From: {{ \Carbon\Carbon::parse($hireDateFilter)->format('d/m/Y') }}
+            </span>
+            @endif
+            @if($hireDateTo)
+            <span class="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800">
+                To: {{ \Carbon\Carbon::parse($hireDateTo)->format('d/m/Y') }}
+            </span>
+            @endif
+        </div>
+    </div>
+    @endif
+</div>
+
 {{-- Stats Cards --}}
 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-8">
     <div class="overflow-hidden rounded-xl bg-white shadow ring-1 ring-gray-200">
